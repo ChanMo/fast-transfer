@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Fast Transfer</title>
+    <link rel="stylesheet" href="/static/bulma.min.css" />
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+	<div class="columns">
+	  <div class="column is-8 is-offset-2">
+	    <h1 class="title">Fast Transfer</h1>
+	    {% with messages = get_flashed_messages() %}
+	      {% if messages %}
+		{% for message in messages %}
+		  <div class="notification is-light is-primary">{{message}}</div>
+		{% endfor %}
+	      {% endif %}
+	    {% endwith %}
+	    <div class="level">
+	      <div class="level-left">
+		{% if dirs %}
+		  <nav class="breadcrumb" aria-label="breadcrumbs">
+		    <ul>
+		      <li><a href="/">Home</a></li>
+		      {% for dir in dirs %}
+			<li {% if loop.last %} class="is-active"{% endif %}>
+			  <a {% if loop.last %}href="#" aria-current="page"{% else %}{% endif %}href="?dir={{dir.path}}">{{dir.name}}</a>
+			</li>
+		      {% endfor %}
+		    </ul>
+		  </nav>
+		{% endif %}
+	      </div>
+	      <div class="level-right">
+		<form method="post" enctype="multipart/form-data">
+		  <label class="button is-link" >
+		    <input class="is-hidden" type="file" name="file" />Upload
+		  </label>
+		</form>
+	      </div>
+	    </div>
+
+	    <div class="table-container">
+	      <table class="table is-fullwidth">
+		<thead>
+		  <tr>
+		    <th>File</th>
+		    <th>Size</th>
+		    <th>Created At</th>
+		    <th>Last Modified</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  {% for link in links %}
+		    <tr>
+		      <td><a href="{{ link.link }}">{{ link.file }}</a></td>
+		      <td>{{link.size|filesizeformat}}</td>
+		      <td>{{link.ctime}}</td>
+		      <td>{{link.mtime}}</td>
+		    </tr>
+		  {% endfor %}
+		</tbody>
+	      </table>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </section>
+    <footer class="footer">
+      <div class="content">
+	<p><a href="">Github</a></p>
+      </div>
+    </footer>
+    <script>
+     document.querySelector("[name=file]").addEventListener("change", (e) => {
+       e.target.closest("form").submit();
+     });
+    </script>
+  </body>
+</html>
