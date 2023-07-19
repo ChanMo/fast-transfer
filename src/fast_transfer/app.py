@@ -36,20 +36,33 @@ def index():
     files = os.listdir(path)
 
     # Create a list of links to the files
-    links = []
+
+    dirs = []
+    fs = []
     for file in files:
         f = os.path.join(path, file)
         isdir = os.path.isdir(f)
         dir_link = f"?dir={folder}/{file}" if folder else f'?dir={file}'
         file_link = f'?dir={folder}&file={file}'
-        links.append({
-            'name': file if not isdir else f'{file}/',
-            'link': dir_link if isdir else file_link,
-            'is_dir': isdir,
-            'size': os.path.getsize(f),
-            'ctime': datetime.datetime.fromtimestamp(int(os.path.getctime(f))),
-            'mtime': datetime.datetime.fromtimestamp(int(os.path.getmtime(f)))
-        })
+        if isdir:
+            dirs.append({
+                'name': file if not isdir else f'{file}/',
+                'link': dir_link if isdir else file_link,
+                'is_dir': isdir,
+                'size': os.path.getsize(f),
+                'ctime': datetime.datetime.fromtimestamp(int(os.path.getctime(f))),
+                'mtime': datetime.datetime.fromtimestamp(int(os.path.getmtime(f)))
+            })
+        else:
+            fs.append({
+                'name': file if not isdir else f'{file}/',
+                'link': dir_link if isdir else file_link,
+                'is_dir': isdir,
+                'size': os.path.getsize(f),
+                'ctime': datetime.datetime.fromtimestamp(int(os.path.getctime(f))),
+                'mtime': datetime.datetime.fromtimestamp(int(os.path.getmtime(f)))
+            })
+            
 
     sort = flask.request.args.get('sort', '-mtime')
     if sort not in ['ctime', '-ctime', 'mtime', '-mtime', 'name', '-name', 'size', '-size']:
@@ -61,17 +74,18 @@ def index():
         reverse = True
         key = sort[1:]
         
-    links = sorted(links, key=lambda i:i[key], reverse=reverse)
+    dirs = sorted(dirs, key=lambda i:i[key], reverse=reverse)
+    fs = sorted(fs, key=lambda i:i[key], reverse=reverse)
 
-    dirs = []
+    paths = []
     if folder:
         for i in folder.split('/'):
-            dirs.append({
+            paths.append({
                 'name': i,
-                'path': f'{dirs[-1]["path"]}/{i}' if len(dirs) > 0 else i
+                'path': f'{paths[-1]["path"]}/{i}' if len(paths) > 0 else i
             })
 
-    return flask.render_template("index.html", links=links, dirs=dirs, sort=sort)
+    return flask.render_template("index.html", links=dirs + fs, dirs=paths, sort=sort)
 
 
 @click.command()
@@ -81,7 +95,7 @@ def cli(userdata, port):
     app.config.update(
         USER_DATA=userdata
     )
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)
 
 
 if __name__ == "__main__":
