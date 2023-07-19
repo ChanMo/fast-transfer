@@ -42,6 +42,7 @@
 	      </div>
 	    </div>
 
+	    {% if links %}
 	    <div class="table-container">
 	      <table class="table is-fullwidth">
 		<thead>
@@ -64,13 +65,16 @@
 		</tbody>
 	      </table>
 	    </div>
+	    {% else %}
+	    <p class="block has-text-centered py-6">Empty</p>
+	    {% endif %}
 	  </div>
 	</div>
       </div>
     </section>
     <footer class="footer">
-      <div class="content">
-	<p><a href="">Github</a></p>
+      <div class="content has-text-centered">
+	<p><a target="_blank" href="https://github.com/ChanMo/fast-transfer">Github</a></p>
       </div>
     </footer>
     <script>
