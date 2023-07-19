@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Fast Transfer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/static/bulma.min.css" />
   </head>
   <body>
@@ -47,16 +48,16 @@
 	      <table class="table is-fullwidth">
 		<thead>
 		  <tr>
-		    <th>File</th>
-		    <th>Size</th>
-		    <th>Created At</th>
-		    <th>Last Modified</th>
+		    <th>{% if sort == "-name" %}<a href="?dir={{dir}}&sort=name">Name &darr;</a>{% elif sort == "name" %}<a href="?dir={{dir}}&sort=-name">Name &uarr;</a>{% else %}<a href="?dir={{dir}}&sort=name">Name</a>{% endif %}</th>
+		    <th>{% if sort == "-size" %}<a href="?dir={{dir}}&sort=size">Size &darr;</a>{% elif sort == "size" %}<a href="?dir={{dir}}&sort=-size">Size &uarr;</a>{% else %}<a href="?dir={{dir}}&sort=size">Size</a>{% endif %}</th>
+		    <th>{% if sort == "-ctime" %}<a href="?dir={{dir}}&sort=ctime">Created At &darr;</a>{% elif sort == "ctime" %}<a href="?dir={{dir}}&sort=-ctime">Created At &uarr;</a>{% else %}<a href="?dir={{dir}}&sort=-ctime">Created At</a>{% endif %}</th>
+		    <th>{% if sort == "-mtime" %}<a href="?dir={{dir}}&sort=mtime">Last Modified &darr;</a>{% elif sort == "mtime" %}<a href="?dir={{dir}}&sort=-mtime">Last Modified &uarr;</a>{% else %}<a href="?dir={{dir}}&sort=-mtime">Last Modified</a>{% endif %}</th>
 		  </tr>
 		</thead>
 		<tbody>
 		  {% for link in links %}
 		    <tr>
-		      <td><a href="{{ link.link }}">{{ link.file }}</a></td>
+		      <td><a href="{{ link.link }}">{{ link.name }}</a></td>
 		      <td>{{link.size|filesizeformat}}</td>
 		      <td>{{link.ctime}}</td>
 		      <td>{{link.mtime}}</td>

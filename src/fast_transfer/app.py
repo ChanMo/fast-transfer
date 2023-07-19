@@ -43,13 +43,25 @@ def index():
         dir_link = f"?dir={folder}/{file}" if folder else f'?dir={file}'
         file_link = f'?dir={folder}&file={file}'
         links.append({
-            'file': file if not isdir else f'{file}/',
+            'name': file if not isdir else f'{file}/',
             'link': dir_link if isdir else file_link,
             'is_dir': isdir,
             'size': os.path.getsize(f),
             'ctime': datetime.datetime.fromtimestamp(int(os.path.getctime(f))),
             'mtime': datetime.datetime.fromtimestamp(int(os.path.getmtime(f)))
         })
+
+    sort = flask.request.args.get('sort', '-mtime')
+    if sort not in ['ctime', '-ctime', 'mtime', '-mtime', 'name', '-name', 'size', '-size']:
+        sort = '-mtime'
+
+    reverse = False
+    key = sort
+    if sort.startswith('-'):
+        reverse = True
+        key = sort[1:]
+        
+    links = sorted(links, key=lambda i:i[key], reverse=reverse)
 
     dirs = []
     if folder:
@@ -59,16 +71,17 @@ def index():
                 'path': f'{dirs[-1]["path"]}/{i}' if len(dirs) > 0 else i
             })
 
-    return flask.render_template("index.html", links=links, dirs=dirs)
+    return flask.render_template("index.html", links=links, dirs=dirs, sort=sort)
 
 
 @click.command()
 @click.argument('userdata')
-def cli(userdata):
+@click.option('-p', '--port', help='The port to bind to.', default=5000, show_default=True)
+def cli(userdata, port):
     app.config.update(
         USER_DATA=userdata
     )
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=port)
 
 
 if __name__ == "__main__":
