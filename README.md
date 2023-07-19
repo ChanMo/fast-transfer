@@ -1,7 +1,7 @@
 # Fast Transfer
 
 An easy and fast way to transfer files between mulitple users.
-If you offten run the command `python -m http.server`, you will like it.
+If you frequently run the command `python -m http.server`, you will like it.
 
 
 ## Usage
